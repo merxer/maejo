@@ -12,7 +12,8 @@ func index(c echo.Context) error {
 }
 
 func get_users(c echo.Context) error {
-	return c.JSON(http.StatusOK, "pat")
+	firstname := "thawatchai"
+	return c.JSON(http.StatusOK, firstname)
 }
 
 func main() {
