@@ -33,7 +33,7 @@ func get_users_id(c echo.Context) error {
 func update_user(c echo.Context) error {
 	user := new(User)
 	if err := c.Bind(user); err != nil {
-		return c.JSON(http.StatusBadRequest, nil)
+		return c.NoContent(http.StatusBadRequest)
 	}
 	return c.JSON(http.StatusOK, user)
 }
