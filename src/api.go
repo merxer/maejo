@@ -11,11 +11,16 @@ func index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
 
+func get_users(c echo.Context) error {
+	return c.String(http.StatusOK, "pat")
+}
+
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
 	e.GET("/", index)
+	e.GET("/users", get_users)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
