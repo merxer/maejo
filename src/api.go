@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func index(c echo.Context) error {
@@ -12,6 +13,9 @@ func index(c echo.Context) error {
 
 func main() {
 	e := echo.New()
+	e.Use(middleware.Logger())
+
 	e.GET("/", index)
+
 	e.Logger.Fatal(e.Start(":1323"))
 }
