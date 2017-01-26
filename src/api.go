@@ -10,6 +10,7 @@ import (
 type User struct {
 	Firstname string `json:"firstname"`
 	Lastname string	`json:"lastname"`
+	Username string	`json:"username"`
 }
 
 func index(c echo.Context) error {
@@ -18,8 +19,8 @@ func index(c echo.Context) error {
 
 func get_users(c echo.Context) error {
 	pat := User{
-		"thawatchai",
-		"singngam",
+		Firstname: "thawatchai",
+		Lastname: "singngam",
 	}
 	return c.JSON(http.StatusOK, pat)
 }
