@@ -8,8 +8,8 @@ import (
 )
 
 type User struct {
-	Firstname string
-	Lastname string
+	Firstname string `json:"firstname"`
+	Lastname string	`json:"lastname"`
 }
 
 func index(c echo.Context) error {
