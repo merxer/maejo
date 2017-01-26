@@ -12,7 +12,7 @@ func index(c echo.Context) error {
 }
 
 func get_users(c echo.Context) error {
-	return c.XML(http.StatusOK, "pat")
+	return c.JSON(http.StatusOK, "pat")
 }
 
 func main() {
