@@ -10,7 +10,7 @@ import (
 type User struct {
 	Firstname string `json:"firstname"`
 	Lastname string	`json:"lastname"`
-	Username string	`json:"username"`
+	Username string	`json:"username,omitempty"`
 }
 
 func index(c echo.Context) error {
