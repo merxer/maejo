@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"./helper"
 )
@@ -16,6 +17,7 @@ var (
 )
 
 type User struct {
+	Id bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Firstname string `json:"firstname,omitempty" bson:"firstname,omitempty"`
 	Lastname  string `json:"lastname,omitempty" bson:"lastname,omitempty"`
 	Username  string `json:"username,omitempty" bson:"username,omitempty"`
