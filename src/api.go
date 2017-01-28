@@ -30,16 +30,23 @@ func (u *User) save_to_db() error {
 	return nil
 }
 
+func (u *User) read_from_db() ([]User, error) {
+	result := []User{}
+	err := UsersCollection.Find(nil).All(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
 
 func get_users(c echo.Context) error {
-	pat := User{
-		Firstname: "thawatchai",
-		Lastname:  "singngam",
-	}
-	return c.JSON(http.StatusOK, pat)
+	user := User{}
+	result, _ := user.read_from_db()
+	return c.JSON(http.StatusOK, result)
 }
 
 func get_users_id(c echo.Context) error {
