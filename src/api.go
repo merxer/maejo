@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -16,6 +17,11 @@ type User struct {
 	Username string	`json:"username,omitempty" bson:"username,omitempty"`
 	Password string	`json:"password,omitempty" bson:"password,omitempty"`
 }
+
+var (
+	MongoSession *mgo.Session
+	UsersCollection *mgo.Collection
+)
 
 func index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
@@ -42,22 +48,25 @@ func create_user(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-func main() {
-	session, err := mgo.Dial("localhost:27017")
+func init() {
+	MongoSession, err := mgo.Dial("localhost:27017")
 	helper.Check(err)
-	defer session.Close()
+	defer MongoSession.Close()
 
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB("maejo").C("users")
-	err = c.Insert(&User{
+	MongoSession.SetMode(mgo.Monotonic, true)
+	UsersCollection := MongoSession.DB("maejo").C("users")
+
+	err = UsersCollection.Insert(&User{
 		"thawatchai",
 		"singngam",
 		"merxer",
 		"passw0rd",
 	})
 	helper.Check(err)
+}
 
-
+func main() {
+	fmt.Printf("%T\n",MongoSession)
 	e := echo.New()
 	e.Use(middleware.Logger())
 
