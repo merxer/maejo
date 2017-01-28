@@ -46,6 +46,9 @@ func index(c echo.Context) error {
 func get_users(c echo.Context) error {
 	user := User{}
 	result, _ := user.read_from_db()
+	if len(result) == 0 {
+		return c.NoContent(http.StatusNoContent)
+	}
 	return c.JSON(http.StatusOK, result)
 }
 
