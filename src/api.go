@@ -6,44 +6,19 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 
 	"./helper"
 	db "./helper/db"
+	"./models"
 )
-
-type User struct {
-	Id bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	Firstname string `json:"firstname,omitempty" bson:"firstname,omitempty"`
-	Lastname  string `json:"lastname,omitempty" bson:"lastname,omitempty"`
-	Username  string `json:"username,omitempty" bson:"username,omitempty"`
-	Password  string `json:"password,omitempty" bson:"password,omitempty"`
-}
-
-func (u *User) save_to_db() error {
-	err := db.Users_collection.Insert(&u)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (u *User) read_from_db() ([]User, error) {
-	result := []User{}
-	err := db.Users_collection.Find(nil).All(&result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
 
 func index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
 
 func get_users(c echo.Context) error {
-	user := User{}
-	result, _ := user.read_from_db()
+	user := models.User{}
+	result, _ := user.Read_from_db()
 	if len(result) == 0 {
 		return c.NoContent(http.StatusNoContent)
 	}
@@ -56,11 +31,11 @@ func get_users_id(c echo.Context) error {
 }
 
 func create_user(c echo.Context) error {
-	user := new(User)
+	user := new(models.User)
 	if err := c.Bind(user); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
-	user.save_to_db()
+	user.Save_to_db()
 	return c.NoContent(http.StatusCreated)
 }
 
