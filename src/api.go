@@ -9,11 +9,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"./helper"
-)
-
-var (
-	MongoSession    *mgo.Session
-	UsersCollection *mgo.Collection
+	db "./helper/db"
 )
 
 type User struct {
@@ -25,7 +21,7 @@ type User struct {
 }
 
 func (u *User) save_to_db() error {
-	err := UsersCollection.Insert(&u)
+	err := db.Users_collection.Insert(&u)
 	if err != nil {
 		return err
 	}
@@ -34,7 +30,7 @@ func (u *User) save_to_db() error {
 
 func (u *User) read_from_db() ([]User, error) {
 	result := []User{}
-	err := UsersCollection.Find(nil).All(&result)
+	err := db.Users_collection.Find(nil).All(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -69,15 +65,16 @@ func create_user(c echo.Context) error {
 }
 
 func init() {
-	MongoSession, err := mgo.Dial("localhost:27017")
+	mongo_session, err := mgo.Dial("localhost:27017")
 	helper.Check(err)
 
-	MongoSession.SetMode(mgo.Monotonic, true)
-	UsersCollection = MongoSession.DB("maejo").C("users")
+	mongo_session.SetMode(mgo.Monotonic, true)
+	db.Mongo_session = mongo_session
+	db.Users_collection = mongo_session.DB("maejo").C("users")
 }
 
 func main() {
-	defer MongoSession.Close()
+	defer db.Mongo_session.Close()
 
 	e := echo.New()
 	e.Use(middleware.Logger())
