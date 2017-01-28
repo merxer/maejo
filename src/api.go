@@ -12,6 +12,13 @@ import (
 	"./models"
 )
 
+const (
+	API_SERVER=":1323"
+	DATABASE_SERVER="localhost:27017"
+	DATABASE_NAME="maejo"
+	DATABASE_COLLECTION="users"
+)
+
 func index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
@@ -40,12 +47,12 @@ func create_user(c echo.Context) error {
 }
 
 func init() {
-	mongo_session, err := mgo.Dial("localhost:27017")
+	mongo_session, err := mgo.Dial(DATABASE_SERVER)
 	helper.Check(err)
 
 	mongo_session.SetMode(mgo.Monotonic, true)
 	db.Mongo_session = mongo_session
-	db.Users_collection = mongo_session.DB("maejo").C("users")
+	db.Users_collection = mongo_session.DB(DATABASE_NAME).C(DATABASE_COLLECTION)
 }
 
 func main() {
@@ -59,5 +66,5 @@ func main() {
 	e.GET("/users/:id", get_users_id)
 	e.POST("/users", create_user)
 
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(API_SERVER))
 }
