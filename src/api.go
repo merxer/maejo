@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -11,17 +10,25 @@ import (
 	"./helper"
 )
 
-type User struct {
-	Firstname string `json:"firstname,omitempty" bson:"firstname,omitempty"`
-	Lastname string	`json:"lastname,omitempty" bson:"lastname,omitempty"`
-	Username string	`json:"username,omitempty" bson:"username,omitempty"`
-	Password string	`json:"password,omitempty" bson:"password,omitempty"`
-}
-
 var (
-	MongoSession *mgo.Session
+	MongoSession    *mgo.Session
 	UsersCollection *mgo.Collection
 )
+
+type User struct {
+	Firstname string `json:"firstname,omitempty" bson:"firstname,omitempty"`
+	Lastname  string `json:"lastname,omitempty" bson:"lastname,omitempty"`
+	Username  string `json:"username,omitempty" bson:"username,omitempty"`
+	Password  string `json:"password,omitempty" bson:"password,omitempty"`
+}
+
+func (u *User) save_to_db() error {
+	err := UsersCollection.Insert(&u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
@@ -30,7 +37,7 @@ func index(c echo.Context) error {
 func get_users(c echo.Context) error {
 	pat := User{
 		Firstname: "thawatchai",
-		Lastname: "singngam",
+		Lastname:  "singngam",
 	}
 	return c.JSON(http.StatusOK, pat)
 }
@@ -45,28 +52,21 @@ func create_user(c echo.Context) error {
 	if err := c.Bind(user); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
-	return c.JSON(http.StatusOK, user)
+	user.save_to_db()
+	return c.NoContent(http.StatusCreated)
 }
 
 func init() {
 	MongoSession, err := mgo.Dial("localhost:27017")
 	helper.Check(err)
-	defer MongoSession.Close()
 
 	MongoSession.SetMode(mgo.Monotonic, true)
-	UsersCollection := MongoSession.DB("maejo").C("users")
-
-	err = UsersCollection.Insert(&User{
-		"thawatchai",
-		"singngam",
-		"merxer",
-		"passw0rd",
-	})
-	helper.Check(err)
+	UsersCollection = MongoSession.DB("maejo").C("users")
 }
 
 func main() {
-	fmt.Printf("%T\n",MongoSession)
+	defer MongoSession.Close()
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 
