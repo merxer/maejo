@@ -6,6 +6,8 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"gopkg.in/mgo.v2"
+
+	"./helper"
 )
 
 type User struct {
@@ -42,9 +44,7 @@ func create_user(c echo.Context) error {
 
 func main() {
 	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		panic(err)
-	}
+	helper.Check(err)
 	defer session.Close()
 
 	session.SetMode(mgo.Monotonic, true)
@@ -55,10 +55,7 @@ func main() {
 		"merxer",
 		"passw0rd",
 	})
-
-	if err != nil {
-		panic(err)
-	}
+	helper.Check(err)
 
 
 	e := echo.New()
