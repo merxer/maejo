@@ -14,6 +14,11 @@ type User struct {
 	Password  string `json:"password,omitempty" bson:"password,omitempty"`
 }
 
+type Query struct {
+	Key User	`json:"key" bson:"key"`
+	Change User `json:"change" bson:"change"`
+}
+
 func (u *User) Save_to_db() error {
 	err := db.Users_collection.Insert(&u)
 	if err != nil {
@@ -62,4 +67,12 @@ func (u *User) Update_by_id() (*User, error) {
 		return nil, err
 	}
 	return u, nil
+}
+
+func (q *Query) Update_by_keys() error {
+	err := db.Users_collection.Update(&q.Key, &q.Change)
+	if err != nil {
+		return err
+	}
+	return nil
 }

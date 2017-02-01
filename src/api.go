@@ -79,6 +79,16 @@ func update_user_by_id(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+func update_user_by_keys(c echo.Context) error {
+	query := new(models.Query)
+
+	if err := c.Bind(query); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+	query.Update_by_keys()
+	return c.NoContent(http.StatusOK)
+}
+
 
 func init() {
 	mongo_session, err := mgo.Dial(DATABASE_SERVER)
@@ -107,6 +117,7 @@ func main() {
 	e.DELETE("/users/:id", delete_user_by_id)
 	e.DELETE("/users", delete_user_by_keys)
 	e.PUT("/users/:id", update_user_by_id)
+	e.PUT("/users", update_user_by_keys)
 
 
 	e.Logger.Fatal(e.Start(API_SERVER))
