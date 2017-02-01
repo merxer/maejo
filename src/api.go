@@ -69,6 +69,9 @@ func delete_user_by_keys(c echo.Context) error {
 
 func update_user_by_id(c echo.Context) error {
 	user := new(models.User)
+	id := c.Param("id")
+	user.Id = bson.ObjectIdHex(id)
+
 	if err := c.Bind(user); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
@@ -103,7 +106,7 @@ func main() {
 	e.POST("/users", create_user)
 	e.DELETE("/users/:id", delete_user_by_id)
 	e.DELETE("/users", delete_user_by_keys)
-	e.PUT("/users", update_user_by_id)
+	e.PUT("/users/:id", update_user_by_id)
 
 
 	e.Logger.Fatal(e.Start(API_SERVER))
