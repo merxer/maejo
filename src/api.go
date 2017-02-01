@@ -54,8 +54,11 @@ func create_user(c echo.Context) error {
 	if err := c.Bind(user); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
-	user.Save_to_db()
-	return c.NoContent(http.StatusCreated)
+	if user.IsNotDuplicate() {
+		user.Save_to_db()
+		return c.NoContent(http.StatusCreated)
+	}
+	return c.NoContent(http.StatusConflict)
 }
 
 func delete_user_by_keys(c echo.Context) error {

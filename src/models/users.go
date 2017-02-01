@@ -76,3 +76,11 @@ func (q *Query) Update_by_keys() error {
 	}
 	return nil
 }
+
+func (u *User) IsNotDuplicate() bool {
+	err := db.Users_collection.Find(bson.M{"username": u.Username}).One(&u)
+	if err != nil {
+		return true
+	}
+	return false
+}
