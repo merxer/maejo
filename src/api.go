@@ -92,6 +92,18 @@ func update_user_by_keys(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+func login(c echo.Context) error {
+	user := new(models.User)
+	if err := c.Bind(user); err != nil {
+		return c.JSON(http.StatusBadRequest, "Username or password incorrect")
+	}
+	result, err  := user.Login()
+	if err != nil {
+		return echo.ErrUnauthorized
+	}
+	return c.JSON(http.StatusOK, result)
+}
+
 
 func init() {
 	mongo_session, err := mgo.Dial(DATABASE_SERVER)
@@ -121,6 +133,7 @@ func main() {
 	e.DELETE("/users", delete_user_by_keys)
 	e.PUT("/users/:id", update_user_by_id)
 	e.PUT("/users", update_user_by_keys)
+	e.POST("/login", login)
 
 
 	e.Logger.Fatal(e.Start(API_SERVER))

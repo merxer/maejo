@@ -84,3 +84,12 @@ func (u *User) IsNotDuplicate() bool {
 	}
 	return false
 }
+
+func (u *User) Login() (*User, error){
+	err := db.Users_collection.Find(bson.M{
+				"username": u.Username,"password": u.Password}).One(&u)
+	if err != nil {
+		return nil, err
+	}
+	return u,nil
+}
