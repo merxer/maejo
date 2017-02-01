@@ -54,3 +54,12 @@ func (u *User) Delete_by_keys() (*User, error) {
 	}
 	return u, nil
 }
+
+func (u *User) Update_by_id() (*User, error) {
+	change := bson.M{"$set": &u}
+	err := db.Users_collection.UpdateId(u.Id, change)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
