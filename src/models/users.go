@@ -46,3 +46,11 @@ func (u *User) Delete_by_id() (*User, error) {
 	}
 	return u, nil
 }
+
+func (u *User) Delete_by_keys() (*User, error) {
+	err := db.Users_collection.Remove(&u)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}

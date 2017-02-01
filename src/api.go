@@ -58,6 +58,15 @@ func create_user(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
+func delete_user_by_keys(c echo.Context) error {
+	user := new(models.User)
+	if err := c.Bind(user); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+	user.Delete_by_keys()
+	return c.NoContent(http.StatusOK)
+}
+
 func init() {
 	mongo_session, err := mgo.Dial(DATABASE_SERVER)
 	helper.Check(err)
@@ -83,7 +92,7 @@ func main() {
 	e.GET("/users/:id", get_users_id)
 	e.POST("/users", create_user)
 	e.DELETE("/users/:id", delete_user_by_id)
-
+	e.DELETE("/users", delete_user_by_keys)
 
 
 	e.Logger.Fatal(e.Start(API_SERVER))
