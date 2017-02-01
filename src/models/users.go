@@ -30,3 +30,11 @@ func (u *User) Read_from_db() ([]User, error) {
 	}
 	return result, nil
 }
+
+func (u *User) Read_by_id() (*User, error) {
+	err := db.Users_collection.Find(bson.M{"_id": u.Id}).One(&u)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
