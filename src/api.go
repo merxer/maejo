@@ -41,6 +41,14 @@ func get_users_id(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
+func delete_user_by_id(c echo.Context) error {
+	user := new(models.User)
+	id := c.Param("id")
+	user.Id = bson.ObjectIdHex(id)
+	user.Delete_by_id()
+	return c.NoContent(http.StatusOK)
+}
+
 func create_user(c echo.Context) error {
 	user := new(models.User)
 	if err := c.Bind(user); err != nil {
@@ -74,6 +82,9 @@ func main() {
 	e.GET("/users", get_users)
 	e.GET("/users/:id", get_users_id)
 	e.POST("/users", create_user)
+	e.DELETE("/users/:id", delete_user_by_id)
+
+
 
 	e.Logger.Fatal(e.Start(API_SERVER))
 }

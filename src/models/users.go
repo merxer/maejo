@@ -38,3 +38,11 @@ func (u *User) Read_by_id() (*User, error) {
 	}
 	return u, nil
 }
+
+func (u *User) Delete_by_id() (*User, error) {
+	err := db.Users_collection.RemoveId(u.Id)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
